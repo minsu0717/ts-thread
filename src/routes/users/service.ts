@@ -42,3 +42,46 @@ export const getAccessToken = async (code: string) => {
     console.log(err);
   }
 };
+
+export const getUserByEmail = async (email: string) => {
+  try {
+    const [data] = await Users.find({ email: email });
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// interface KakaoUserData {
+//   id: number;
+//   connected_at: string;
+//   properties: {
+//     nickname: string;
+//   };
+//   kakao_account: {
+//     profile_nickname_needs_agreement: boolean;
+//     profile: {
+//       nickname: string;
+//       is_default_nickname: boolean;
+//     };
+//     has_email: boolean;
+//     email_needs_agreement: boolean;
+//     is_email_valid: boolean;
+//     is_email_verified: boolean;
+//     email: string;
+//   };
+// }
+
+export const kakaoSignIn = async (accessToken: string) => {
+  try {
+    const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return result;
+  } catch (error) {
+    console.error("Error fetching user data from Kakao API:", error);
+    throw new Error("Failed to fetch user data from Kakao API");
+  }
+};
