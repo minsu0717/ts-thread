@@ -26,13 +26,17 @@ export const signIn = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Authorization token is missing" });
   }
   const data = await userService.kakaoSignIn(kakaoToken);
-  console.log(data);
   const email = data.data.kakao_account.email;
 
   const user = await userService.getUserByEmail(email);
+  console.log(user);
   if (!user) {
     await userService.createUser(data.data.properties.nickname, email);
   } else {
-    res.send("성공.");
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET as string
+    );
+    res.json(token);
   }
 };
