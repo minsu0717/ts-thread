@@ -11,9 +11,9 @@ export const getAuth = async (req: Request, res: Response) => {
 export const getAccessToken = async (req: Request, res: Response) => {
   try {
     const code: string | undefined = req.query.code as string;
-    console.log("-----------------", code);
+    // console.log("-----------------", code);
     const token = await userService.getAccessToken(code);
-    console.log("-----------;", token);
+    // console.log("-----------;", token);
     res.json(token);
   } catch (err) {
     console.log(err);
@@ -29,7 +29,7 @@ export const signIn = async (req: Request, res: Response) => {
   const email = data.data.kakao_account.email;
 
   const user = await userService.getUserByEmail(email);
-  console.log(user);
+
   if (!user) {
     await userService.createUser(data.data.properties.nickname, email);
   } else {

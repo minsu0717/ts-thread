@@ -1,6 +1,7 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
-interface DBUser {
+export interface DBUser {
+  _id: Types.ObjectId;
   nickname: string;
   email: string;
   password: string;

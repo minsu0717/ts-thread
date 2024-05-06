@@ -1,9 +1,8 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import { Users } from "../../models/usersServer";
 import { CustomError } from "../../utils/customError";
 import axios from "axios";
 import qs from "querystring";
+import { Types } from "mongoose";
 
 const redirectUri = "http://localhost:3000/auth/kakao/finish";
 const clientId = process.env.KAKAO_KEY;
@@ -46,6 +45,15 @@ export const getAccessToken = async (code: string) => {
 export const getUserByEmail = async (email: string) => {
   try {
     const [data] = await Users.find({ email: email });
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getUserById = async (id: Types.ObjectId) => {
+  try {
+    const [data] = await Users.find({ _id: id });
     return data;
   } catch (err) {
     console.log(err);
