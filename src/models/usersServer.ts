@@ -19,7 +19,7 @@ const UsersSchema = new Schema<DBUser>(
       trim: true,
       required: true,
     },
-    password: { type: String, maxlength: 200, trim: true, required: true },
+    password: { type: String, maxlength: 200, trim: true },
     phone_number: { type: String, maxlength: 100 },
     birth_day: { type: Date },
     profile_image: { type: String, maxlength: 300 },

@@ -52,26 +52,6 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-// interface KakaoUserData {
-//   id: number;
-//   connected_at: string;
-//   properties: {
-//     nickname: string;
-//   };
-//   kakao_account: {
-//     profile_nickname_needs_agreement: boolean;
-//     profile: {
-//       nickname: string;
-//       is_default_nickname: boolean;
-//     };
-//     has_email: boolean;
-//     email_needs_agreement: boolean;
-//     is_email_valid: boolean;
-//     is_email_verified: boolean;
-//     email: string;
-//   };
-// }
-
 export const kakaoSignIn = async (accessToken: string) => {
   try {
     const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
@@ -83,5 +63,18 @@ export const kakaoSignIn = async (accessToken: string) => {
   } catch (error) {
     console.error("Error fetching user data from Kakao API:", error);
     throw new Error("Failed to fetch user data from Kakao API");
+  }
+};
+
+export const createUser = async (nickname: string, email: string) => {
+  try {
+    const user = new Users({
+      nickname: nickname,
+      email: email,
+    });
+    await user.save();
+  } catch (error) {
+    error = new CustomError(400, "db insert 실패");
+    throw error;
   }
 };

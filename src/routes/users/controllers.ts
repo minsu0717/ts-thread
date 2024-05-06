@@ -21,19 +21,17 @@ export const getAccessToken = async (req: Request, res: Response) => {
 };
 
 export const signIn = async (req: Request, res: Response) => {
-  // const { email, password }: { email: string; password: string } = req.body;
   const kakaoToken = req.headers.authorization;
   if (!kakaoToken) {
     return res.status(400).json({ message: "Authorization token is missing" });
   }
   const data = await userService.kakaoSignIn(kakaoToken);
-
+  console.log(data);
   const email = data.data.kakao_account.email;
-  console.log(email);
 
   const user = await userService.getUserByEmail(email);
   if (!user) {
-    const error = new CustomError(401, "카카오 회원가입이 필요합니다.");
+    await userService.createUser(data.data.properties.nickname, email);
   } else {
     res.send("성공.");
   }
