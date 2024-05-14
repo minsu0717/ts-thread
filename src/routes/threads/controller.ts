@@ -9,3 +9,9 @@ export const createThread = async (req: Request, res: Response) => {
   await threadService.createThread(userId, content);
   res.json({ message: "작성완료" });
 };
+
+export const getThread = async (req: Request, res: Response) => {
+  const userId = req.user?._id as Types.ObjectId;
+  const thread = await threadService.getThread(userId);
+  res.status(200).json({ data: thread });
+};
