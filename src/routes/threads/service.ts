@@ -16,33 +16,33 @@ export const createThread = async (userId: Types.ObjectId, content: string) => {
   }
 };
 
-interface ThreadDocument {
-  _id: Types.ObjectId;
-  user_id: {
-    _id: string;
-    nickname: string;
-    email: string;
-    creaedAt: Date;
-    updaedAt: Date;
-    _v: number;
-  };
-  content: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+// interface ThreadDocument {
+//   _id: Types.ObjectId;
+//   user_id: {
+//     _id: string;
+//     nickname: string;
+//     email: string;
+//     creaedAt: Date;
+//     updaedAt: Date;
+//     _v: number;
+//   };
+//   content: string;
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
 export const getThread = async (userId: Types.ObjectId) => {
   try {
-    const data: ThreadDocument[] = await Thread.find({
+    const data = await Thread.find({
       user_id: userId,
-    }).populate("user_id");
-    const modifiedData = data.map((e) => ({
-      _id: e._id,
-      user_id: { nickname: e.user_id?.nickname }, // Optional chaining 사용하여 user_id가 null이 아닌 경우에만 nickname에 접근
-      content: e.content,
-      createdAt: e.createdAt,
-      updatedAt: e.updatedAt,
-    }));
-    return modifiedData;
+    }).populate("user_id", { nickname: 1 });
+    // const modifiedData = data.map((e) => ({
+    //   _id: e._id,
+    //   user_id: { nickname: e.user_id?.nickname }, // Optional chaining 사용하여 user_id가 null이 아닌 경우에만 nickname에 접근
+    //   content: e.content,
+    //   createdAt: e.createdAt,
+    //   updatedAt: e.updatedAt,
+    // }));
+    return data;
   } catch (err) {
     // err = new CustomError(500, "db error");
     // throw err;
