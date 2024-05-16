@@ -52,7 +52,7 @@ export const getThread = async (userId: Types.ObjectId) => {
 
 export const getThreadDetail = async (
   userId: Types.ObjectId,
-  threadId: Types.ObjectId
+  threadId: string
 ) => {
   try {
     const data = await Thread.find({

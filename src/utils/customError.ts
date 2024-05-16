@@ -1,3 +1,5 @@
+import { Response } from "express";
+
 export class CustomError extends Error {
   statusCode: number;
 
@@ -6,3 +8,7 @@ export class CustomError extends Error {
     this.statusCode = statusCode;
   }
 }
+
+export const reportError = (error: CustomError, res: Response) => {
+  return res.status(error.statusCode).json({ message: error.message });
+};
