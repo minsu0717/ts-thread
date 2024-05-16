@@ -15,3 +15,10 @@ export const getThread = async (req: Request, res: Response) => {
   const thread = await threadService.getThread(userId);
   res.status(200).json({ data: thread });
 };
+export const getThreadDetail = async (req: Request, res: Response) => {
+  const userId = req.user?._id as Types.ObjectId;
+  const threadId = new Types.ObjectId(req.params.id);
+  const thread = await threadService.getThreadDetail(userId, threadId);
+
+  res.status(200).json({ data: thread });
+};

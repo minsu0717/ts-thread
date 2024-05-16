@@ -49,3 +49,20 @@ export const getThread = async (userId: Types.ObjectId) => {
     console.log(err);
   }
 };
+
+export const getThreadDetail = async (
+  userId: Types.ObjectId,
+  threadId: Types.ObjectId
+) => {
+  try {
+    const data = await Thread.find({
+      user_id: userId,
+      _id: threadId,
+    }).populate("user_id", { nickname: 1 });
+    return data;
+  } catch (err) {
+    // err = new CustomError(500, "db error");
+    // throw err;
+    console.log(err);
+  }
+};
