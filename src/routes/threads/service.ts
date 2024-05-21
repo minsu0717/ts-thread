@@ -44,9 +44,9 @@ export const getThread = async (userId: Types.ObjectId) => {
     // }));
     return data;
   } catch (err) {
-    // err = new CustomError(500, "db error");
-    // throw err;
-    console.log(err);
+    err = new CustomError(500, "db error");
+    throw err;
+    // console.log(err);
   }
 };
 
@@ -60,6 +60,23 @@ export const getThreadDetail = async (
       _id: threadId,
     }).populate("user_id", { nickname: 1 });
     return data;
+  } catch (err) {
+    err = new CustomError(500, "db error");
+    throw err;
+    // console.log(err);
+  }
+};
+
+export const editThread = async (
+  userId: Types.ObjectId,
+  threadId: string,
+  content: string
+) => {
+  try {
+    await Thread.updateOne(
+      { user_id: userId, _id: threadId },
+      { $set: { content: content } }
+    );
   } catch (err) {
     // err = new CustomError(500, "db error");
     // throw err;

@@ -6,3 +6,4 @@ export const threadRouter = express.Router();
 threadRouter.post("/create", loginRequired, threadController.createThread);
 threadRouter.get("/list", loginRequired, threadController.getThread);
 threadRouter.get("/:id", loginRequired, threadController.getThreadDetail);
+threadRouter.put("/edit/:id", loginRequired, threadController.editThread);

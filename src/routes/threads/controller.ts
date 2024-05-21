@@ -44,3 +44,20 @@ export const getThreadDetail = async (req: Request, res: Response) => {
     }
   }
 };
+export const editThread = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id as Types.ObjectId;
+    const threadId = req.params.id;
+    const { content } = req.body;
+    console.log(content);
+
+    await threadService.editThread(userId, threadId, content);
+
+    res.status(201).json({ message: "수정완료" });
+  } catch (err) {
+    if (err instanceof CustomError) {
+      console.log(err);
+      reportError(err, res);
+    }
+  }
+};
