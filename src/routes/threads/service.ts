@@ -83,3 +83,17 @@ export const editThread = async (
     console.log(err);
   }
 };
+
+export const deleteThread = async (
+  threadId: string,
+  userId: Types.ObjectId
+) => {
+  try {
+    const result = await Thread.deleteOne({ _id: threadId, user_id: userId });
+    return result;
+  } catch (err) {
+    // err = new CustomError(500, "db error");
+    // throw err;
+    console.log(err);
+  }
+};

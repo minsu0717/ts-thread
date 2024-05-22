@@ -51,9 +51,25 @@ export const editThread = async (req: Request, res: Response) => {
     const { content } = req.body;
     console.log(content);
 
-    await threadService.editThread(userId, threadId, content);
-
+    const result = await threadService.editThread(userId, threadId, content);
+    console.log("aaaaa :", result);
     res.status(201).json({ message: "수정완료" });
+  } catch (err) {
+    if (err instanceof CustomError) {
+      console.log(err);
+      reportError(err, res);
+    }
+  }
+};
+
+export const deleteThread = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id as Types.ObjectId;
+    const threadId = req.params.id;
+
+    await threadService.deleteThread(threadId, userId);
+
+    res.status(201).json({ message: "삭제완료" });
   } catch (err) {
     if (err instanceof CustomError) {
       console.log(err);
