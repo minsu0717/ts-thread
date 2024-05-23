@@ -22,6 +22,10 @@ export const getThread = async (req: Request, res: Response) => {
   try {
     const userId = req.user?._id as Types.ObjectId;
     const thread = await threadService.getThread(userId);
+    if (!thread || thread.length === 0) {
+      return res.status(200).json({ message: "게시물이 존재하지 않습니다." });
+    }
+
     res.status(200).json({ data: thread });
   } catch (err) {
     if (err instanceof CustomError) {

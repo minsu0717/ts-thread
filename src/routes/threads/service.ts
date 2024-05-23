@@ -16,37 +16,60 @@ export const createThread = async (userId: Types.ObjectId, content: string) => {
   }
 };
 
-// interface ThreadDocument {
-//   _id: Types.ObjectId;
-//   user_id: {
-//     _id: string;
-//     nickname: string;
-//     email: string;
-//     creaedAt: Date;
-//     updaedAt: Date;
-//     _v: number;
-//   };
-//   content: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
 export const getThread = async (userId: Types.ObjectId) => {
   try {
-    const data = await Thread.find({
-      user_id: userId,
-    }).populate("user_id", { nickname: 1 });
-    // const modifiedData = data.map((e) => ({
-    //   _id: e._id,
-    //   user_id: { nickname: e.user_id?.nickname }, // Optional chaining 사용하여 user_id가 null이 아닌 경우에만 nickname에 접근
-    //   content: e.content,
-    //   createdAt: e.createdAt,
-    //   updatedAt: e.updatedAt,
-    // }));
+    const data = await Thread.aggregate([
+      {
+        $match: { user_id: userId },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user",
+          pipeline: [
+            {
+              $project: {
+                nickname: 1,
+                profile_image: 1,
+              },
+            },
+          ],
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $lookup: {
+          from: "threadlikes",
+          localField: "_id",
+          foreignField: "thread_id",
+          as: "likes",
+        },
+      },
+      {
+        $addFields: {
+          likeCount: { $size: "$likes" },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          user_id: 1,
+          nickname: "$user.nickname",
+          profileImage: "$user.profile_image",
+          content: 1,
+          likeCount: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
     return data;
   } catch (err) {
-    err = new CustomError(500, "db error");
-    throw err;
-    // console.log(err);
+    // err = new CustomError(500, "db error");
+    // throw err;
+    console.log(err);
   }
 };
 
