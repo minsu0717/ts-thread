@@ -35,7 +35,9 @@ export const getThreadDetail = async (req: Request, res: Response) => {
     const userId = req.user?._id as Types.ObjectId;
     const threadId = req.params.id;
     const thread = await threadService.getThreadDetail(userId, threadId);
-
+    if (!thread) {
+      return res.status(200).json({ message: "게시물이 존재하지 않습니다." });
+    }
     res.status(200).json({ data: thread });
   } catch (err) {
     if (err instanceof CustomError) {
@@ -70,6 +72,26 @@ export const deleteThread = async (req: Request, res: Response) => {
     await threadService.deleteThread(threadId, userId);
 
     res.status(201).json({ message: "삭제완료" });
+  } catch (err) {
+    if (err instanceof CustomError) {
+      console.log(err);
+      reportError(err, res);
+    }
+  }
+};
+
+export const createLikeThread = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id as Types.ObjectId;
+    const threadId = req.params.id;
+    const thread = await threadService.getThreadDetail(userId, threadId);
+    if (!thread) {
+      return res.status(200).json({ message: "게시물이 존재하지 않습니다." });
+    }
+
+    await threadService.createThreadLike(userId, threadId);
+
+    res.status(201).json({ message: "Success!" });
   } catch (err) {
     if (err instanceof CustomError) {
       console.log(err);

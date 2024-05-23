@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { Thread } from "../../models/threadServer";
 import { CustomError } from "../../utils/customError";
-import { Users } from "../../models/usersServer";
+import { ThreadLikes } from "../../models/threadLikesServer";
 
 export const createThread = async (userId: Types.ObjectId, content: string) => {
   try {
@@ -55,7 +55,7 @@ export const getThreadDetail = async (
   threadId: string
 ) => {
   try {
-    const data = await Thread.find({
+    const [data] = await Thread.find({
       user_id: userId,
       _id: threadId,
     }).populate("user_id", { nickname: 1 });
@@ -91,6 +91,23 @@ export const deleteThread = async (
   try {
     const result = await Thread.deleteOne({ _id: threadId, user_id: userId });
     return result;
+  } catch (err) {
+    // err = new CustomError(500, "db error");
+    // throw err;
+    console.log(err);
+  }
+};
+
+export const createThreadLike = async (
+  userId: Types.ObjectId,
+  threadId: string
+) => {
+  try {
+    const threadLike = new ThreadLikes({
+      user_id: userId,
+      thread_id: threadId,
+    });
+    await threadLike.save();
   } catch (err) {
     // err = new CustomError(500, "db error");
     // throw err;
