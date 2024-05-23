@@ -64,6 +64,7 @@ export const getThread = async (userId: Types.ObjectId) => {
           updatedAt: 1,
         },
       },
+      { $sort: { createdAt: -1 } },
     ]);
     return data;
   } catch (err) {
@@ -78,10 +79,39 @@ export const getThreadDetail = async (
   threadId: string
 ) => {
   try {
-    const [data] = await Thread.find({
-      user_id: userId,
-      _id: threadId,
-    }).populate("user_id", { nickname: 1 });
+    const [data] = await Thread.aggregate([
+      { $match: { user_id: userId, _id: new Types.ObjectId(threadId) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $lookup: {
+          from: "threadlikes",
+          localField: "_id",
+          foreignField: "thread_id",
+          as: "threadlikes",
+        },
+      },
+      { $addFields: { likes: { $size: "$threadlikes" } } },
+      {
+        $project: {
+          _id: 1,
+          user_id: 1,
+          nickname: "$user.nickname",
+          profileImage: "$user.profile_image",
+          content: 1,
+          likes: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
     return data;
   } catch (err) {
     err = new CustomError(500, "db error");
