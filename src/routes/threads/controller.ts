@@ -99,3 +99,19 @@ export const createLikeThread = async (req: Request, res: Response) => {
     }
   }
 };
+
+export const deleteThreadLike = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id as Types.ObjectId;
+    const threadId = req.params.id;
+
+    await threadService.deleteThreadLike(userId, threadId);
+
+    res.status(201).json({ message: "삭제완료" });
+  } catch (err) {
+    if (err instanceof CustomError) {
+      console.log(err);
+      reportError(err, res);
+    }
+  }
+};

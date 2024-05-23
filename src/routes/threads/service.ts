@@ -114,3 +114,20 @@ export const createThreadLike = async (
     console.log(err);
   }
 };
+
+export const deleteThreadLike = async (
+  userId: Types.ObjectId,
+  threadId: string
+) => {
+  try {
+    const result = await ThreadLikes.deleteOne({
+      thread_id: threadId,
+      user_id: userId,
+    });
+    return result;
+  } catch (err) {
+    // err = new CustomError(500, "db error");
+    // throw err;
+    console.log(err);
+  }
+};

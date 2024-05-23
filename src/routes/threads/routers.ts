@@ -13,3 +13,9 @@ threadRouter.post(
   loginRequired,
   threadController.createLikeThread
 );
+
+threadRouter.delete(
+  "/like/:id",
+  loginRequired,
+  threadController.deleteThreadLike
+);
