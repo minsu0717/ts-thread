@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  app:
+    image: thread-docker
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://127.0.0.1:27017/thread
+    depends_on:
+      - mongodb-myapp
+
+  mongodb-myapp:
+    image: mongo:latest
+    ports:
+      - "27018:27017"

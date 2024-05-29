@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/minsu0717/ts-thread#readme",
   "dependencies": {
-    "@types/mongoose-auto-increment": "^5.0.38",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -27,7 +26,6 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.5",
-    "mongoose-auto-increment": "^5.0.1",
     "mongoose-sequence": "^6.0.1",
     "mysql2": "^3.9.7",
     "typeorm": "^0.3.20",
