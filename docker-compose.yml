@@ -2,15 +2,17 @@ version: "3.8"
 services:
   app:
     image: thread-docker
+    container_name: node-server
     build: .
     ports:
       - "3000:3000"
     environment:
-      - MONGODB_URI=mongodb://127.0.0.1:27017/thread
-    depends_on:
-      - mongodb-myapp
+      - MONGODB_URI=mongodb://mongodb:27017/thread
+    links:
+      - mongodb
 
-  mongodb-myapp:
+  mongodb:
     image: mongo:latest
+    container_name: mongodb
     ports:
       - "27018:27017"
