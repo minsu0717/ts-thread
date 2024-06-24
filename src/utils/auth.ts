@@ -10,6 +10,9 @@ export const loginRequired = async (
 ) => {
   try {
     const accessToken = req.headers.authorization;
+    const refreshToken = req.headers.refresh;
+    const refreshDecode = await jwt.decode(refreshToken as string);
+    console.log("refreshDecode : ", refreshDecode);
     if (!accessToken) {
       const error = new CustomError(401, "Need Access Token");
       return res.status(error.statusCode).json({ message: error.message });
