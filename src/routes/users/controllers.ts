@@ -1,4 +1,5 @@
 import { CustomError } from "../../utils/customError";
+import { makeRefreshToken } from "../../utils/refresh";
 import * as userService from "../users/service";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -33,11 +34,19 @@ export const signIn = async (req: Request, res: Response) => {
   if (!user) {
     await userService.createUser(data.data.properties.nickname, email);
   } else {
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET as string,
       { expiresIn: "1h" }
     );
-    res.json(token);
+    const refreshToken = makeRefreshToken();
+    const userRefreshToken = await userService.getRefreshToken(user._id);
+    console.log("userToken : ", userRefreshToken);
+    if (!userRefreshToken) {
+      await userService.createRefreshToken(user._id, refreshToken);
+    } else {
+      await userService.updateRefreshToken(user._id, refreshToken);
+    }
+    res.json({ accessToken: accessToken, refreshToken: refreshToken });
   }
 };
