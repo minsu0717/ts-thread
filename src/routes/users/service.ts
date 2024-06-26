@@ -87,32 +87,6 @@ export const createUser = async (nickname: string, email: string) => {
     throw error;
   }
 };
-export const createRefreshToken = async (
-  userId: Types.ObjectId,
-  refreshToken: string
-) => {
-  try {
-    const token = new Token({
-      user_id: userId,
-      refreshToken: refreshToken,
-    });
-
-    await token.save();
-  } catch (error) {
-    error = new CustomError(400, "db 실패");
-    throw error;
-  }
-};
-
-export const getRefreshToken = async (userId: Types.ObjectId) => {
-  try {
-    const [token] = await Token.find({ user_id: userId });
-    return token;
-  } catch (error) {
-    error = new CustomError(400, "db 실패");
-    throw error;
-  }
-};
 
 export const updateRefreshToken = async (
   userId: Types.ObjectId,
@@ -121,7 +95,8 @@ export const updateRefreshToken = async (
   try {
     await Token.updateOne(
       { user_id: userId },
-      { $set: { refreshToken: refreshToken } }
+      { $set: { refreshToken: refreshToken } },
+      { upsert: true }
     );
   } catch (error) {
     error = new CustomError(400, "db  실패");

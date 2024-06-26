@@ -40,12 +40,7 @@ export const signIn = async (req: Request, res: Response) => {
       { expiresIn: "1s" }
     );
     const refreshToken = makeRefreshToken();
-    const userRefreshToken = await userService.getRefreshToken(user._id);
-    if (!userRefreshToken) {
-      await userService.createRefreshToken(user._id, refreshToken);
-    } else {
-      await userService.updateRefreshToken(user._id, refreshToken);
-    }
+    await userService.updateRefreshToken(user._id, refreshToken);
     res.json({ accessToken: accessToken, refreshToken: refreshToken });
   }
 };
