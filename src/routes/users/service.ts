@@ -52,7 +52,7 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-export const getUserById = async (id: Types.ObjectId) => {
+export const getUserById = async (id: string) => {
   try {
     const [data] = await Users.find({ _id: id });
     return data;
@@ -98,6 +98,19 @@ export const updateRefreshToken = async (
       { $set: { refreshToken: refreshToken } },
       { upsert: true }
     );
+  } catch (error) {
+    error = new CustomError(400, "db  실패");
+    throw error;
+  }
+};
+
+export const getRefreshToken = async (userId: string, refreshToken: string) => {
+  try {
+    const token = await Token.find({
+      user_id: userId,
+      refreshToken: refreshToken,
+    });
+    return token;
   } catch (error) {
     error = new CustomError(400, "db  실패");
     throw error;

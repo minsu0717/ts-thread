@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { getUserById } from "../routes/users/service";
 import { Request, Response, NextFunction } from "express";
 import { CustomError } from "./customError";
+import { accessTokenVerify, refreshDecodeVerify } from "./refresh";
 
 export const loginRequired = async (
   req: Request,
@@ -17,20 +18,21 @@ export const loginRequired = async (
       const error = new CustomError(401, "Need Access Token");
       return res.status(error.statusCode).json({ message: error.message });
     }
-    const payload = (await jwt.verify(
-      accessToken,
-      process.env.JWT_SECRET as string
-    )) as JwtPayload;
+    const payload = await accessTokenVerify(accessToken);
     console.log("payload :", payload);
-    const user = await getUserById(payload.id);
-    console.log(user);
-    if (!user) {
-      const error = new CustomError(404, "User does not exist");
-      return res.status(error.statusCode).json({ message: error.message });
-    }
+    if (typeof payload === "string") {
+      const user = await getUserById(payload);
+      console.log(user);
+      if (!user) {
+        const error = new CustomError(404, "User does not exist");
+        return res.status(error.statusCode).json({ message: error.message });
+      }
+      const token = await refreshDecodeVerify(payload, refreshToken as string);
+      console.log("token : ", token);
 
-    req.user = user;
-    next();
+      req.user = user;
+      next();
+    }
   } catch (err) {
     const customError = new CustomError(401, "Invalid Access Token");
     return res

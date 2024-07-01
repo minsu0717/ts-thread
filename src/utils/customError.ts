@@ -12,3 +12,7 @@ export class CustomError extends Error {
 export const reportError = (error: CustomError, res: Response) => {
   return res.status(error.statusCode).json({ message: error.message });
 };
+
+export const getErrorMessage = (error: unknown) => {
+  if (error instanceof Error) return error.message;
+};
